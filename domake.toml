@@ -5,5 +5,4 @@ description="C++ package manager"
 copyright="Copyright  © 2016,Force Charlie, All Rights Reserved. "
 authors=["Force Charlie <charlieio@outlook.com>"]
 
-
 [dependenices]

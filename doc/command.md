@@ -18,6 +18,14 @@ add package to project
 ##clean
 clean object
 
+##upgrade
+upgrade package
+
+##remove
+remove a cache package
+
+##list
+List local cached package
 
 ##package
 create a package
