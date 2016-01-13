@@ -1,0 +1,9 @@
+[package]
+name="domake"
+version="0.1.0"
+description="C++ package manager"
+copyright="Copyright  © 2016,Force Charlie, All Rights Reserved. "
+authors=["Force Charlie <charlieio@outlook.com>"]
+
+
+[dependenices]
