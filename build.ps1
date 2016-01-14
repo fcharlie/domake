@@ -4,7 +4,7 @@
 $PrefixDir=[System.IO.Path]::GetDirectoryName($MyInvocation.MyCommand.Definition)
 $SourcesDir="$PrefixDir/src"
 
-Function Build-Sources{
+Function Compile-Domake{
     param(
         [String]$SrcDir,
         [String]$Include
