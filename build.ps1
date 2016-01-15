@@ -11,8 +11,8 @@ param(
 if($PSVersionTable.PSVersion.Major -lt 3)
 {
     $PSVersionString=$PSVersionTable.PSVersion.Major
-    Write-Output -ForegroundColor Red "Build.ps1 must run under PowerShell 3.0 or later host environment !"
-    Write-Output -ForegroundColor Red "Your PowerShell Version:$PSVersionString"
+    Write-Error "Build.ps1 must run under PowerShell 3.0 or later host environment !"
+    Write-Error "Your PowerShell Version:$PSVersionString"
     if($Host.Name -eq "ConsoleHost"){
         [System.Console]::ReadKey()
     }
@@ -32,7 +32,8 @@ Function Start-CompileDomake{
         [ValidateNotNullorEmpty()]
         [String]$SrcDir,
         [String]$Include,
-        [String]$Flavor
+        [ValidateSe("Release","Debug")]
+        [String]$Flavor="Release"
     )
     Push-Location $PWD
     if(!(Test-Path "$PrefixDir/obj")){
@@ -59,7 +60,9 @@ Function Start-LinkDomake{
         [String]$ObjectDir,
         [Parameter(Position=1,Mandatory=$True,HelpMessage="Enter Target Name")]
         [ValidateNotNullorEmpt()]
-        [String]$Target
+        [String]$Target,
+        [ValidateSe("Release","Debug")]
+        [String]$Flavor="Release"
     )
     Push-Location $PWD
     if($Flavor -eq "Debug"){
@@ -84,13 +87,13 @@ Function Clear-Domake{
 
 if($Action -eq "build"){
     Restore-Environment
-    Start-CompileDomake -SrcDir $SourcesDir -Include "$PrefixDir/include" -Flavor
-    Start-LinkDomake -ObjectDir $ObjectDir -Target "domake.exe" -Flavor
+    Start-CompileDomake -SrcDir $SourcesDir -Include "$PrefixDir/include" -Flavor $Flavor
+    Start-LinkDomake -ObjectDir $ObjectDir -Target "domake.exe" -Flavor $Flavor
 }elseif($Action -eq "rebuild"){
     Clear-Domake
     Restore-Environment
-    Start-CompileDomake -SrcDir $SourcesDir -Include "$PrefixDir/include" -Flavor
-    Start-LinkDomake -ObjectDir $ObjectDir -Target "domake.exe" -Flavor
+    Start-CompileDomake -SrcDir $SourcesDir -Include "$PrefixDir/include" -Flavor $Flavor
+    Start-LinkDomake -ObjectDir $ObjectDir -Target "domake.exe" -Flavor $Flavor
 }elseif($Action -eq "clear"){
     Clear-Domake
     exit 0
