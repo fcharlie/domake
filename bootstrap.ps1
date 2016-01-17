@@ -49,8 +49,8 @@ Function Start-CompileDomake{
         }else{
                 &cl -nologo -c $file -O2 -TP -DNODEBUG -W4 -EHsc -Zc:forScope -Zc:wchar_t -MT -I$SrcDir
         }
-
     }
+    &rc -nologo  -fo "$PrefixDir/obj/domake.res" "$SrcDir/domake.rc"
     Pop-Location
 }
 
@@ -66,10 +66,11 @@ Function Start-LinkDomake{
         [String]$Flavor="Release"
     )
     Push-Location $PWD
+    Set-Location "$ObjectDir"
     if($Flavor -eq "Debug"){
-        &link -nologo "$ObjectDir\*.obj" KERNEL32.lib  ADVAPI32.lib Shell32.lib USER32.lib GDI32.lib comctl32.lib Shlwapi.lib Secur32.lib -out:$Target
+        &link -nologo "*.obj" domake.res KERNEL32.lib  ADVAPI32.lib Shell32.lib USER32.lib GDI32.lib comctl32.lib Shlwapi.lib Secur32.lib -out:$Target
     }else{
-        &link -nologo "$ObjectDir\*.obj" KERNEL32.lib  ADVAPI32.lib Shell32.lib USER32.lib GDI32.lib comctl32.lib Shlwapi.lib Secur32.lib -out:$Target
+        &link -nologo "*.obj" domake.res KERNEL32.lib  ADVAPI32.lib Shell32.lib USER32.lib GDI32.lib comctl32.lib Shlwapi.lib Secur32.lib -out:$Target
     }
     Pop-Location
 }
@@ -92,12 +93,12 @@ Function Clear-Domake{
 if($Action -eq "build"){
     Restore-Environment -Root $PrefixDir
     Start-CompileDomake -SrcDir $SourcesDir -Include "$PrefixDir/include" -Flavor $Flavor
-    Start-LinkDomake -ObjectDir $ObjectDir -Target "domake.exe" -Flavor $Flavor
+    Start-LinkDomake -ObjectDir $ObjectDir -Target "$PrefixDir/domake.exe" -Flavor $Flavor
 }elseif($Action -eq "rebuild"){
     Clear-Domake -Root $PrefixDir
     Restore-Environment -Root $PrefixDir
     Start-CompileDomake -SrcDir $SourcesDir -Include "$PrefixDir/include" -Flavor $Flavor
-    Start-LinkDomake -ObjectDir $ObjectDir -Target "domake.exe" -Flavor $Flavor
+    Start-LinkDomake -ObjectDir $ObjectDir -Target "$PrefixDir/domake.exe" -Flavor $Flavor
 }elseif($Action -eq "clear"){
     Clear-Domake -Root $PrefixDir
     exit 0
