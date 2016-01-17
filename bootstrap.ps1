@@ -3,7 +3,7 @@
 param(
     [ValidateSet("build","rebuild","clear")]
     [String]$Action="build",
-    [ValidateSe("Release","Debug")]
+    [ValidateSet("Release","Debug")]
     [String]$Flavor="Release"
 )
 # powershell ./build.ps1 -Flavor Debug
@@ -20,6 +20,7 @@ if($PSVersionTable.PSVersion.Major -lt 3)
 }
 
 #$PrefixDir=[System.IO.Path]::GetDirectoryName($MyInvocation.MyCommand.Definition)
+$PrefixDir=$PSScriptRoot
 $SourcesDir="$PSScriptRoot/src"
 $ObjectDir="$PSScriptRoot/obj"
 
@@ -32,7 +33,7 @@ Function Start-CompileDomake{
         [ValidateNotNullorEmpty()]
         [String]$SrcDir,
         [String]$Include,
-        [ValidateSe("Release","Debug")]
+        [ValidateSet("Release","Debug")]
         [String]$Flavor="Release"
     )
     Push-Location $PWD
@@ -40,7 +41,7 @@ Function Start-CompileDomake{
         mkdir -Force "$PrefixDir/obj"
     }
     Set-Location "$PrefixDir/obj"
-    $filelist=Get-ChildItem "$SrcDir"  -Recurse *.cc | Foreach {$_.FullName}
+    $filelist=Get-ChildItem "$SrcDir"  -Recurse *.cc | Foreach-Object {$_.FullName}
     foreach($file in $filelist){
         #Build File
         if($Flavor -eq "Debug"){
@@ -59,9 +60,9 @@ Function Start-LinkDomake{
         [ValidateNotNullorEmpty()]
         [String]$ObjectDir,
         [Parameter(Position=1,Mandatory=$True,HelpMessage="Enter Target Name")]
-        [ValidateNotNullorEmpt()]
+        [ValidateNotNullorEmpty()]
         [String]$Target,
-        [ValidateSe("Release","Debug")]
+        [ValidateSet("Release","Debug")]
         [String]$Flavor="Release"
     )
     Push-Location $PWD
@@ -82,19 +83,23 @@ Function Restore-Environment{
 }
 
 Function Clear-Domake{
-    #
+    param(
+        [Parameter(Position=0,Mandatory=$True,HelpMessage="Enter Root Folder")]
+        [String]$Root=$PrefixDir
+    )   
 }
 
 if($Action -eq "build"){
-    Restore-Environment
+    Restore-Environment -Root $PrefixDir
     Start-CompileDomake -SrcDir $SourcesDir -Include "$PrefixDir/include" -Flavor $Flavor
     Start-LinkDomake -ObjectDir $ObjectDir -Target "domake.exe" -Flavor $Flavor
 }elseif($Action -eq "rebuild"){
-    Clear-Domake
-    Restore-Environment
+    Clear-Domake -Root $PrefixDir
+    Restore-Environment -Root $PrefixDir
     Start-CompileDomake -SrcDir $SourcesDir -Include "$PrefixDir/include" -Flavor $Flavor
     Start-LinkDomake -ObjectDir $ObjectDir -Target "domake.exe" -Flavor $Flavor
 }elseif($Action -eq "clear"){
-    Clear-Domake
+    Clear-Domake -Root $PrefixDir
     exit 0
 }
+

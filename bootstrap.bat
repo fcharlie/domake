@@ -7,7 +7,7 @@ if "%CPUArch%"=="" for /F "tokens=1,2*" %%i in ('reg query "HKLM\System\CurrentC
     )
 )
 
-echo "CPU Arch : %CPUArch%"
+echo The Architecture of the current Operating System is: %CPUArch%
 
 if "%CPUArch%"=="AMD64" goto AMD64
 if "%CPUArch%"=="x86" goto Intel32
@@ -74,4 +74,4 @@ echo "Not found valid VisualStudio"
 goto :EOF
 
 :DomakeBuildTask
-PowerShell -NoProfile -NoLogo -ExecutionPolicy unrestricted -Command "[System.Threading.Thread]::CurrentThread.CurrentCulture = ''; [System.Threading.Thread]::CurrentThread.CurrentUICulture = '';& '%~dp0build.ps1' %*"
+PowerShell -NoProfile -NoLogo -ExecutionPolicy unrestricted -Command "[System.Threading.Thread]::CurrentThread.CurrentCulture = ''; [System.Threading.Thread]::CurrentThread.CurrentUICulture = '';& '%~dp0bootstrap.ps1' %*"
