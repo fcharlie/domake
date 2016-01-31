@@ -1,7 +1,7 @@
 @echo off
 REM Call MSVC Environment
 
-if "%ToolChian%"=="" goto EnvironmentSetting
+if "%ToolChain%"=="" goto EnvironmentSetting
 goto DomakeBuildTask
 
 :EnvironmentSetting
@@ -28,13 +28,13 @@ goto VS140USE32BIT
 :ARM
 if not exist "%VS140COMNTOOLS%..\..\VC\bin\x86_arm" goto VAILDVSNOTFOUD
 call "%VS140COMNTOOLS%..\..\VC\vcvarsall.bat"  x86_arm
-set ToolChian=Visual Studio 2015 ARM
+set ToolChain=Visual Studio 2015 ARM
 goto DomakeBuildTask
 
 :ARM64
 if not exist "%VS140COMNTOOLS%..\..\VC\bin\x86_arm64" goto VAILDVSNOTFOUD
 call "%VS140COMNTOOLS%..\..\VC\vcvarsall.bat"  x86_arm64
-set ToolChian=Visual Studio 2015 ARM64
+set ToolChain=Visual Studio 2015 ARM64
 goto DomakeBuildTask
 
 goto :EOF
@@ -46,19 +46,19 @@ goto :EOF
 :VS140USE64BIT
 if not exist "%VS140COMNTOOLS%..\..\VC\bin\x86_amd64" goto VS120USE64BIT
 call "%VS140COMNTOOLS%..\..\VC\vcvarsall.bat"  x86_amd64
-set ToolChian=Visual Studio 2015 x64
+set ToolChain=Visual Studio 2015 x64
 goto DomakeBuildTask
 
 :VS120USE64BIT
 IF not exist "%VS120COMNTOOLS%..\..\VC\bin\x86_amd64"  goto VS110USE64BIT
 call "%VS120COMNTOOLS%..\..\VC\vcvarsall.bat"  x86_amd64
-set ToolChian=Visual Studio 2013 x64
+set ToolChain=Visual Studio 2013 x64
 goto DomakeBuildTask
 
 :VS110USE64BIT
 if not exist "%VS110COMNTOOLS%..\..\VC\bin\x86_amd64"  goto VAILDVSNOTFOUD
 call "%VS110COMNTOOLS%..\..\VC\vcvarsall.bat"  x86_amd64
-set ToolChian=Visual Studio 2012 x64
+set ToolChain=Visual Studio 2012 x64
 goto DomakeBuildTask
 
 
@@ -66,19 +66,19 @@ goto DomakeBuildTask
 :VS140USE32BIT
 if not exist %VS140COMNTOOLS%  goto VS120USE32BIT
 call "%VS140COMNTOOLS%\VsDevCmd.bat"
-set ToolChian=Visual Studio 2015
+set ToolChain=Visual Studio 2015
 goto DomakeBuildTask
 
 :VS120USE32BIT
 IF not exist "%VS120COMNTOOLS%"  goto VS110USE32BIT
 call "%VS120COMNTOOLS%.\VsDevCmd.bat"
-set ToolChian=Visual Studio 2013
+set ToolChain=Visual Studio 2013
 goto DomakeBuildTask
 
 :VS110USE32BIT
 if not exist %VS110COMNTOOLS%  goto VAILDVSNOTFOUD
 call "%VS110COMNTOOLS%\VsDevCmd.bat"
-set ToolChian=Visual Studio 2012
+set ToolChain=Visual Studio 2012
 goto DomakeBuildTask
 
 :VAILDVSNOTFOUD
@@ -86,4 +86,5 @@ echo "Not found valid VisualStudio"
 goto :EOF
 
 :DomakeBuildTask
+echo Use ToolChain: %ToolChain%
 PowerShell -NoProfile -NoLogo -ExecutionPolicy unrestricted -Command "[System.Threading.Thread]::CurrentThread.CurrentCulture = ''; [System.Threading.Thread]::CurrentThread.CurrentUICulture = '';& '%~dp0bootstrap.ps1' %*"
