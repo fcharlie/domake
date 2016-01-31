@@ -84,17 +84,18 @@ void ProgressUpdate(size_t rate, void *data) {
 int DownloadFileSyncEx(const std::wstring &url, const std::wstring &path,ProgressCallbackStruture *progress)
 {
 	RequestURL zurl;
-	if (!RequestURLResolve(url, zurl)) return RequestURLParseFailed;
-	auto hInternet = WinHttpOpen(L"domake/1.0",
+	if (!RequestURLResolve(url, zurl)) return 1;
+	auto hInternet = WinHttpOpen(
+        DEFAULT_USERAGENT,
 		WINHTTP_ACCESS_TYPE_DEFAULT_PROXY,
 		WINHTTP_NO_PROXY_NAME,
 		WINHTTP_NO_PROXY_BYPASS,
 		0);
-	if (hInternet == nullptr) return InvokeWinHTTPOpenFailed;
-	auto hConnect = WinHttpConnect(hInternet, zurl.host.c_str(), zurl.nPort, 0);
+	if (hInternet == nullptr) return 2;
+	auto hConnect = WinHttpConnect(hInternet, zurl.host.c_str(),(INTERNET_PORT)zurl.nPort, 0);
 	if (hConnect == nullptr) {
 		WinHttpCloseHandle(hInternet);
-		return HTTPConnectFailed;
+		return 3;
 	}
 	DWORD dwOption = WINHTTP_OPTION_REDIRECT_POLICY_ALWAYS;
 	WinHttpSetOption(hInternet, WINHTTP_OPTION_REDIRECT_POLICY, &dwOption, sizeof(DWORD));
@@ -105,7 +106,7 @@ int DownloadFileSyncEx(const std::wstring &url, const std::wstring &path,Progres
 	if (hRequest == nullptr) {
 		WinHttpCloseHandle(hConnect);
 		WinHttpCloseHandle(hInternet);
-		return 3;
+		return 4;
 	}
 
 	if (WinHttpSendRequest(hRequest,
@@ -113,20 +114,18 @@ int DownloadFileSyncEx(const std::wstring &url, const std::wstring &path,Progres
 		WINHTTP_NO_REQUEST_DATA, 0,
 		0, 0) == FALSE)
 	{
-		DWORD err = GetLastError();
-		WinHttpCloseHandle(hRequest);
-		WinHttpCloseHandle(hConnect);
-		WinHttpCloseHandle(hInternet);
-		return 4;
-	}
-
-	if (WinHttpReceiveResponse(hRequest, NULL) == FALSE)
-	{
-		DWORD err = GetLastError();
 		WinHttpCloseHandle(hRequest);
 		WinHttpCloseHandle(hConnect);
 		WinHttpCloseHandle(hInternet);
 		return 5;
+	}
+
+	if (WinHttpReceiveResponse(hRequest, NULL) == FALSE)
+	{
+		WinHttpCloseHandle(hRequest);
+		WinHttpCloseHandle(hConnect);
+		WinHttpCloseHandle(hInternet);
+		return 6;
 	}
 	DWORD dwHeader = 0;
 	BOOL bResult = FALSE;
@@ -159,7 +158,6 @@ int DownloadFileSyncEx(const std::wstring &url, const std::wstring &path,Progres
 		FILE_ATTRIBUTE_NORMAL,
 		NULL);
 	DWORD dwSize = 0;
-	bool bRetValue = false;
 	size_t total = 0;
 	if (progress) {
 		progress->impl(0, progress->userdata);
@@ -214,4 +212,18 @@ int DownloadFileSyncEx(const std::wstring &url, const std::wstring &path,Progres
 	WinHttpCloseHandle(hConnect);
 	WinHttpCloseHandle(hInternet);
     return 0;
+}
+
+void WINAPI AsyncCallbackInternel(
+    HINTERNET hInternet,
+    DWORD_PTR dwContext,
+    DWORD dwInternetStatus,
+    LPVOID lpvStatusInformation,
+    DWORD dwStatusInformationLength){
+        /// do something
+        (void)hInternet;
+        (void)dwContext;
+        (void)dwInternetStatus;
+        (void)lpvStatusInformation;
+        (void)dwStatusInformationLength;
 }

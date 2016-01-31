@@ -6,19 +6,20 @@
 
 #include <string>
 #include <unordered_map>
+#include "runtime.h"
 
 #ifdef _WIN32
-#define Char wchar_t
-#define String std::wstring
+// #define Char wchar_t
+// #define String std::wstring
 #define DEFAULT_USERAGENT L"domake/1.0"
 #else
-#define Char char
-#define String std::string
+// #define Char char
+// #define String std::string
 #define DEFAULT_USERAGENT "domake/1.0"
 #endif
 
 struct ProgressCallbackStruture {
-	void (*impl)( float rate, void *userdata);
+    void (*impl)(size_t rate, void *userdata);
     void *userdata;
 };
 

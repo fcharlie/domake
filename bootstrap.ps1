@@ -45,9 +45,9 @@ Function Start-CompileDomake{
     foreach($file in $filelist){
         #Build File
         if($Flavor -eq "Debug"){
-                &cl -nologo -c $file -O2 -TP  -DDEBUG -W4 -EHsc -Zc:forScope -Zc:wchar_t -MTd -I$SrcDir
+                &cl -nologo -I"$SrcDir"  -c  $file -O2 -TP  -DDEBUG -W4 -EHsc -Zc:forScope -Zc:wchar_t -MTd -I$SrcDir
         }else{
-                &cl -nologo -c $file -O2 -TP -DNODEBUG -W4 -EHsc -Zc:forScope -Zc:wchar_t -MT -I$SrcDir
+                &cl -nologo -I"$SrcDir" -c  $file -O2 -TP -DNODEBUG -W4 -EHsc -Zc:forScope -Zc:wchar_t -MT -I$SrcDir
         }
     }
     &rc -nologo  -fo "$PrefixDir/obj/domake.res" "$SrcDir/domake.rc"
@@ -68,9 +68,9 @@ Function Start-LinkDomake{
     Push-Location $PWD
     Set-Location "$ObjectDir"
     if($Flavor -eq "Debug"){
-        &link -nologo "*.obj" domake.res KERNEL32.lib  ADVAPI32.lib Shell32.lib USER32.lib GDI32.lib comctl32.lib Shlwapi.lib Secur32.lib -out:$Target
+        &link -nologo "*.obj" domake.res KERNEL32.lib  ADVAPI32.lib Shell32.lib WinHTTP.lib USER32.lib GDI32.lib comctl32.lib Shlwapi.lib Secur32.lib -out:$Target
     }else{
-        &link -nologo "*.obj" domake.res KERNEL32.lib  ADVAPI32.lib Shell32.lib USER32.lib GDI32.lib comctl32.lib Shlwapi.lib Secur32.lib -out:$Target
+        &link -nologo "*.obj" domake.res KERNEL32.lib  ADVAPI32.lib Shell32.lib WinHTTP.lib USER32.lib GDI32.lib comctl32.lib Shlwapi.lib Secur32.lib -out:$Target
     }
     Pop-Location
 }
