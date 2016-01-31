@@ -30,4 +30,15 @@ typedef std::string String;
 
 #endif
 
+////
+class Process{
+public:
+    Process(const Char *cmdline);
+    int Join();
+    int Detch();
+private:
+    int id;
+};
+
+
 #endif
