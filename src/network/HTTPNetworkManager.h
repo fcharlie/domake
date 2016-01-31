@@ -18,8 +18,8 @@
 #endif
 
 struct ProgressCallbackStruture {
-	void *userdata;
-	void(*impl)( float rate, void *userdata);
+	void (*impl)( float rate, void *userdata);
+    void *userdata;
 };
 
 
