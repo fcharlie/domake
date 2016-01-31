@@ -1,4 +1,4 @@
 /*
-* domake HTTP Library on Windows
+* domake HTTP Library on POSIX
 */
 
