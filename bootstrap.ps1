@@ -21,8 +21,8 @@ if($PSVersionTable.PSVersion.Major -lt 3)
 
 #$PrefixDir=[System.IO.Path]::GetDirectoryName($MyInvocation.MyCommand.Definition)
 $PrefixDir=$PSScriptRoot
-$SourcesDir="$PSScriptRoot/src"
-$ObjectDir="$PSScriptRoot/obj"
+$SourcesDir="$PSScriptRoot\src"
+$ObjectDir="$PSScriptRoot\obj"
 
 <#
 # Compile-Domake Function
@@ -37,10 +37,11 @@ Function Start-CompileDomake{
         [String]$Flavor="Release"
     )
     Push-Location $PWD
-    if(!(Test-Path "$PrefixDir/obj")){
-        mkdir -Force "$PrefixDir/obj"
+    if(!(Test-Path "$PrefixDir\obj")){
+        mkdir -Force "$PrefixDir\obj"
     }
-    Set-Location "$PrefixDir/obj"
+    Set-Location "$PrefixDir\obj"
+    Write-Output "Compiler sources, Flavor:$Flavor `nSources Dir: $SrcDir `nInclude Dir: $Include"
     $filelist=Get-ChildItem "$SrcDir"  -Recurse *.cc | Foreach-Object {$_.FullName}
     foreach($file in $filelist){
         #Build File
@@ -50,7 +51,7 @@ Function Start-CompileDomake{
                 &cl -nologo -I"$SrcDir" -c  $file -O2 -TP -DNODEBUG -W4 -EHsc -Zc:forScope -Zc:wchar_t -MT -I$SrcDir
         }
     }
-    &rc -nologo  -fo "$PrefixDir/obj/domake.res" "$SrcDir/domake.rc"
+    &rc -nologo  -fo "$PrefixDir\obj\domake.res" "$SrcDir\domake.rc"
     Pop-Location
 }
 
@@ -66,11 +67,17 @@ Function Start-LinkDomake{
         [String]$Flavor="Release"
     )
     Push-Location $PWD
+    Write-Output "Link domake.....`nFlavor: $Flavor"
     Set-Location "$ObjectDir"
     if($Flavor -eq "Debug"){
         &link -nologo "*.obj" domake.res KERNEL32.lib  ADVAPI32.lib Shell32.lib WinHTTP.lib USER32.lib GDI32.lib comctl32.lib Shlwapi.lib Secur32.lib -out:$Target
     }else{
         &link -nologo "*.obj" domake.res KERNEL32.lib  ADVAPI32.lib Shell32.lib WinHTTP.lib USER32.lib GDI32.lib comctl32.lib Shlwapi.lib Secur32.lib -out:$Target
+    }
+    if(Test-Path $Target){
+        Write-Output "Target: $Target`nBuild domake success !"
+    }else{
+        Write-Error "Build domake failed !"
     }
     Pop-Location
 }
@@ -92,13 +99,13 @@ Function Clear-Domake{
 
 if($Action -eq "build"){
     Restore-Environment -Root $PrefixDir
-    Start-CompileDomake -SrcDir $SourcesDir -Include "$PrefixDir/include" -Flavor $Flavor
-    Start-LinkDomake -ObjectDir $ObjectDir -Target "$PrefixDir/domake.exe" -Flavor $Flavor
+    Start-CompileDomake -SrcDir $SourcesDir -Include "$PrefixDir\include" -Flavor $Flavor
+    Start-LinkDomake -ObjectDir $ObjectDir -Target "$PrefixDir\domake.exe" -Flavor $Flavor
 }elseif($Action -eq "rebuild"){
     Clear-Domake -Root $PrefixDir
     Restore-Environment -Root $PrefixDir
-    Start-CompileDomake -SrcDir $SourcesDir -Include "$PrefixDir/include" -Flavor $Flavor
-    Start-LinkDomake -ObjectDir $ObjectDir -Target "$PrefixDir/domake.exe" -Flavor $Flavor
+    Start-CompileDomake -SrcDir $SourcesDir -Include "$PrefixDir\include" -Flavor $Flavor
+    Start-LinkDomake -ObjectDir $ObjectDir -Target "$PrefixDir\domake.exe" -Flavor $Flavor
 }elseif($Action -eq "clear"){
     Clear-Domake -Root $PrefixDir
     exit 0
