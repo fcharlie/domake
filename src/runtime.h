@@ -21,7 +21,7 @@ typedef std::wstring String;
 
 #ifndef _T
 #define _T(x) __T(x)
-#define __T(x) L##x
+#define __T(x) x
 #endif
 
 typedef char Char;
@@ -31,14 +31,14 @@ typedef std::string String;
 #endif
 
 ////
-class Process{
+class Process {
 public:
-    Process(const Char *cmdline);
-    int Join();
-    int Detch();
-private:
-    int id;
-};
+  Process(const Char *cmdline);
+  int Join();
+  int Detch();
 
+private:
+  int id;
+};
 
 #endif

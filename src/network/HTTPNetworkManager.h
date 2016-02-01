@@ -19,23 +19,16 @@
 #endif
 
 struct ProgressCallbackStruture {
-    void (*impl)(size_t rate, void *userdata);
-    void *userdata;
+  void (*impl)(size_t rate, void *userdata);
+  void *userdata;
 };
 
+class HTTPRequest {};
 
-class HTTPRequest{
-};
+class HTTPResponse {};
 
-class HTTPResponse{
-};
-
-int Request(const HTTPRequest &request,HTTPResponse &response);
-
-int DownloadFileSyncEx(
-    const String &url, 
-    const String &path,
-    ProgressCallbackStruture *progress);
+int Request(const HTTPRequest &request, HTTPResponse &response);
+int DownloadFileSync(const String &url, const Char *saveFile,
+                     ProgressCallbackStruture *progress);
 
 #endif
-
