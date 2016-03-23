@@ -81,6 +81,17 @@ void ProgressUpdate(size_t rate, void *data) {
 }
 */
 
+/*
+
+BOOL PathYetAnotherMakeUniqueName(
+  _Out_    PWSTR  pszUniqueName,
+  _In_     PCWSTR pszPath,
+  _In_opt_ PCWSTR pszShort,
+  _In_opt_ PCWSTR pszFileSpec
+);
+
+*/
+
 int DownloadFileSyncInternal(const std::wstring &url, const std::wstring &path,
                              ProgressCallbackStruture *progress) {
   RequestURL zurl;
