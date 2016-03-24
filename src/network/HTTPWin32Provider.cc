@@ -174,7 +174,6 @@ int Request(const HTTPRequest &request, HTTPResponse &response) {
                                   WINHTTP_HEADER_NAME_BY_INDEX, NULL, &dwHeader,
                                   WINHTTP_NO_HEADER_INDEX);
   hbuffer = new wchar_t[dwHeader + 1];
-  size_t contentLength = 0;
   if (hbuffer) {
     ::WinHttpQueryHeaders(hRequest, WINHTTP_QUERY_RAW_HEADERS_CRLF,
                           WINHTTP_HEADER_NAME_BY_INDEX, hbuffer, &dwHeader,

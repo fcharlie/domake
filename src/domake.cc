@@ -3,6 +3,8 @@
 **/
 #include <iostream>
 #include <string>
+#include "HTTPNetworkManager.hpp"
+
 
 int ParseArgv(int Argc,char **Argv)
 {

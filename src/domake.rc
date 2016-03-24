@@ -1,6 +1,6 @@
 #include <windows.h>
 
-#define COPYRIGHT L"Copyright \x00a9 2016 Force Charlie.All Rights Reserved"
+#define COPYRIGHT L"Copyright \x00a9 2016 Force Charlie. All Rights Reserved"
 
 VS_VERSION_INFO VERSIONINFO
  FILEVERSION 1,0,0,0
