@@ -1,3 +1,12 @@
 // Place your settings in this file to overwrite default and user settings.
 {
+    "clang.cflags": [
+        "-std=c11",
+        "-I${workspaceRoot}/include"
+    ],
+    // Compiler options for C++ (e.g. ['-std=c++11'])
+    "clang.cxxflags": [
+        "-std=c++11",
+        "-I${workspaceRoot}/include"
+    ]
 }

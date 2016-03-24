@@ -1,8 +1,23 @@
 {
-    "clang.cxxflags": [
-        "-I${workspaceRoot}/include"
-    ],
-    "clang.cflags": [
-        "-I${workspaceRoot}/include"
-    ]
+    "version": "0.1.0",
+    // "clang.cxxflags": [
+    //     "-I${workspaceRoot}/include"
+    // ],
+    // "clang.cflags": [
+    //     "-I${workspaceRoot}/include"
+    // ],
+    "windows": {
+        "command": "${env.ComSpec}",
+        "args": [
+            "/c",
+            "${workspaceRoot}/bootstrap.bat"
+        ]
+    },
+    "linux": {
+        "command": "/bin/sh",
+        "args": [
+            "-c",
+            "${workspaceRoot}/bootstrap.sh"
+        ]
+    }
 }
