@@ -1,7 +1,7 @@
 //
 ///
-#include <iostream>
 #include "HTTPNetworkManager.h"
+#include <iostream>
 
 void ProgressCallback(size_t rate, void *data) { // printf("\r%zu\n", rate);
   if (rate > 100)
@@ -18,7 +18,7 @@ void ProgressCallback(size_t rate, void *data) { // printf("\r%zu\n", rate);
 int main() {
   std::string url = "http://npm.taobao.org/mirrors/atom/1.4.1/atom-windows.zip";
   ProgressCallbackStruture progress = {ProgressCallback, nullptr};
-  std::cout << "Download File Result: "
-            << DownloadFileSync(url, NULL, &progress) << std::endl;
+  std::cout << "Download File Result: " << DownloadFile(url, NULL, &progress)
+            << std::endl;
   return 0;
 }

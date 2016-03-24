@@ -46,9 +46,9 @@ Function Start-CompileDomake{
     foreach($file in $filelist){
         #Build File
         if($Flavor -eq "Debug"){
-                &cl -nologo -I"$SrcDir"  -c  $file -O2 -TP  -DDEBUG -W4 -EHsc -Zc:forScope -Zc:wchar_t -MTd -I$SrcDir
+                &cl -nologo -I"$PrefixDir\include"  -c  $file -O2 -TP  -DDEBUG -W4 -EHsc -Zc:forScope -Zc:wchar_t -MTd -I$SrcDir
         }else{
-                &cl -nologo -I"$SrcDir" -c  $file -O2 -TP -DNODEBUG -W4 -EHsc -Zc:forScope -Zc:wchar_t -MT -I$SrcDir
+                &cl -nologo -I"$PrefixDir\include" -c  $file -O2 -TP -DNODEBUG -W4 -EHsc -Zc:forScope -Zc:wchar_t -MT -I$SrcDir
         }
     }
     &rc -nologo  -fo "$PrefixDir\obj\domake.res" "$SrcDir\domake.rc"
